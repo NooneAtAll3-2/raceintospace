@@ -75,7 +75,6 @@ static int get_page(mm_file* mf, ogg_page* pg)
             return -1;
         }
 
-        const int bufsize = 8192;
         int n = fread(p, 1, bufsize, mf->file);
         if (n == 0) {
             return (feof(mf->file)) ? 0 : -1;
