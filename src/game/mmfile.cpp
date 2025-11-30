@@ -67,7 +67,8 @@ static int get_page(mm_file* mf, ogg_page* pg)
             if (ogg_page_version(pg) != 0) return -1;
             return 1;
         }
-        
+
+        const int bufsize = 8192;
         char* p = ogg_sync_buffer(&mf->sync, bufsize);
         if (p == NULL) {
             ERROR1("ogg buffer synchronization failed");
