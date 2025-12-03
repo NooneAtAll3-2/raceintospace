@@ -284,18 +284,18 @@ static int init_theora(mm_file* mf, ogg_page* pg)
             if (res == 1) break;
             
             if (res < 0) {
-                mf->video_info = NULL;
-                return rval = -1;
+                mf->video_info = nullptr;
+                return -1;
             }
 
             if (get_page(mf, pg) <= 0) {
-                mf->video_info = NULL;
-                return rval = -1;
+                mf->video_info = nullptr;
+                return -1;
             }
 
             if (ogg_stream_pagein(stream.get(), pg) < 0) {
-                mf->video_info = NULL;
-                return rval = -1;
+                mf->video_info = nullptr;
+                return -1;
             }
         }
 
@@ -310,7 +310,7 @@ static int init_theora(mm_file* mf, ogg_page* pg)
         /* fall through */
         case OC_BADHEADER:
         default:
-            mf->video_info = NULL;
+            mf->video_info = nullptr;
             return 0;
         }
 
@@ -462,8 +462,8 @@ int mm_open_fp(mm_file* mf, FILE* file)
     // pointers so that the other functions
     // ignore the file.
     if (!mf->file) {
-        mf->audio = NULL;
-        mf->video = NULL;
+        mf->audio = nullptr;
+        mf->video = nullptr;
         return -1;
     }
 
@@ -548,49 +548,49 @@ int mm_close(mm_file* mf)
 
     if (mf->file) {
         fclose(mf->file);
-        mf->file = NULL;
+        mf->file = nullptr;
     }
 
     if (mf->audio) {
         ogg_stream_clear(mf->audio);
         delete mf->audio;
-        mf->audio = NULL;
+        mf->audio = nullptr;
     }
 
     if (mf->video) {
         ogg_stream_clear(mf->video);
         delete mf->video;
-        mf->video = NULL;
+        mf->video = nullptr;
     }
 
     if (mf->video_ctx) {
         theora_clear(mf->video_ctx);
         delete mf->video_ctx;
-        mf->video_ctx = NULL;
+        mf->video_ctx = nullptr;
     }
 
     if (mf->video_info) {
         theora_info_clear(mf->video_info);
         delete mf->video_info;
-        mf->video_info = NULL;
+        mf->video_info = nullptr;
     }
 
     if (mf->audio_blk) {
         vorbis_block_clear(mf->audio_blk);
         delete mf->audio_blk;
-        mf->audio_blk = NULL;
+        mf->audio_blk = nullptr;
     }
 
     if (mf->audio_ctx) {
         vorbis_dsp_clear(mf->audio_ctx);
         delete mf->audio_ctx;
-        mf->audio_ctx = NULL;
+        mf->audio_ctx = nullptr;
     }
 
     if (mf->audio_info) {
         vorbis_info_clear(mf->audio_info);
         delete mf->audio_info;
-        mf->audio_info = NULL;
+        mf->audio_info = nullptr;
     }
 
     ogg_sync_clear(&mf->sync);
@@ -699,7 +699,7 @@ int mm_decode_audio(mm_file* mf, void* buf, int buflen)
     assert(mf);
 
     unsigned channels;
-    if (-1 == mm_audio_info(mf, &channels, NULL)) {
+    if (-1 == mm_audio_info(mf, &channels, nullptr)) {
         return -1;
     }
 
