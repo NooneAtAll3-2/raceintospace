@@ -113,7 +113,7 @@
  *@{
  */
 #define ASTRONAUT_POOLS             5
-#define MAX_CREWS_IN_PROGRAM          8
+#define MAX_CREWS_IN_PROGRAM        8
 #define ASTRONAUT_FLT_CREW_MAX      4
 #define MAX_POOL                    65
 #define MAX_ROSTER                  212
