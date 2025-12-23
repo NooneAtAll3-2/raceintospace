@@ -70,26 +70,26 @@
 #  endif
 #endif
 
-game_options options;
+game_options options{};
 
 LOG_DEFAULT_CATEGORY(config)
 
 /*set up array for environment vars */
 static struct {
-    const char *name;
-    char **dest;
-    const char *def_val;
+    const char* name;
+    char** dest;
+    const char* def_val;
 } env_vars[] = {
     {ENVIRON_DATADIR, &options.dir_gamedata, DEFAULT_DATADIR},
     {ENVIRON_SAVEDIR, &options.dir_savegame, DEFAULT_SAVEDIR},
 };
 
 static const struct {
-    const char *name; /**< name of option */
-    const void *dest; /**< pointer to the variable holding the content */
-    const char *format; /**< scanf format of the data we get */
+    const char* name; /**< name of option */
+    const void* dest; /**< pointer to the variable holding the content */
+    const char* format; /**< scanf format of the data we get */
     int need_alloc; /**< max memory size to be allocated for value */
-    const char *comment; /**< a note to the user */
+    const char* comment; /**< a note to the user */
 } config_strings[] = {
     {
         "datadir", &options.dir_gamedata, "%1024[^\n\r]", 1025,
@@ -223,8 +223,7 @@ void ResetToClassicOptions();
  *
  * \param fail sets the exit code
  */
-static void
-usage(int fail)
+static void usage(int fail)
 {
     fprintf(stderr, "usage:   raceintospace [options...]\n"
             "options: -a -i -f -s -v -n\n"
@@ -235,8 +234,7 @@ usage(int fail)
     exit((fail) ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-static void
-shift_argv(char **argv, int len, int shift)
+static void shift_argv(char** argv, int len, int shift)
 {
     int i = 0;
 
@@ -249,15 +247,13 @@ shift_argv(char **argv, int len, int shift)
     }
 }
 
-static int
-skip_past_newline(FILE *f)
+static int skip_past_newline(FILE* f)
 {
     assert(f);
     return fscanf(f, "%*[^\r\n] ");
 }
 
-static int
-parse_var_value(FILE *f, int index)
+static int parse_var_value(FILE* f, int index)
 {
     char format[128];
     int need_alloc;
@@ -271,7 +267,7 @@ parse_var_value(FILE *f, int index)
 
     if (need_alloc > 0) {
         /* config_strings[].dest points to a pointer */
-        void **target = (void **)config_strings[i].dest;
+        void** target = (void**)config_strings[i].dest;
 
         *target = xrealloc(*target, need_alloc);
 
@@ -286,7 +282,7 @@ parse_var_value(FILE *f, int index)
         }
     } else {
         /* config_strings[].dest points to a value */
-        const void *target = config_strings[i].dest;
+        const void* target = config_strings[i].dest;
 
         res = fscanf(f, format, target, &chars);
 
@@ -304,10 +300,9 @@ parse_var_value(FILE *f, int index)
  *
  * \return -1 if the config file is unavailable
  */
-static int
-read_config_file(void)
+static int read_config_file()
 {
-    FILE *f = open_savedat("config", "rt");
+    FILE* f = open_savedat("config", "rt");
     char config_word[32 + 1];
     int err = 0, res = 0, i = 0;
     char c[2];
@@ -376,12 +371,11 @@ skip_newline:
     return -err;
 }
 
-static int
-write_default_config(void)
+static int write_default_config()
 {
     int i = 0;
     int err = 0;
-    FILE *f = NULL;
+    FILE* f = NULL;
 
     create_save_dir();
     f = open_savedat("config", "wt");
@@ -423,9 +417,9 @@ write_default_config(void)
 
 /* return the location of user's home directory, or NULL if unknown.
  * returned string is malloc-ed */
-static char *get_homedir(void)
+static char* get_homedir()
 {
-    char *s = NULL;
+    char* s = NULL;
 
     if ((s = getenv("HOME"))) {
         return xstrdup(s);
@@ -434,7 +428,7 @@ static char *get_homedir(void)
 #if CONFIG_WIN32
 
     if ((s = getenv("HOMEPATH"))) {
-        char *s2 = NULL;
+        char* s2 = NULL;
         std::string path(s);
 
         if ((s2 = getenv("HOMEDRIVE")) || (s2 = getenv("HOMESHARE"))) {
@@ -452,8 +446,7 @@ static char *get_homedir(void)
     return NULL;
 }
 
-static void
-fixpath_options(void)
+static void fixpath_options()
 {
     fix_pathsep(options.dir_savegame);
     fix_pathsep(options.dir_gamedata);
@@ -540,10 +533,9 @@ void ResetToClassicOptions()
  *
  * \todo possibly maintain a list of dirs to search??
  */
-int
-setup_options(int argc, char *argv[])
+int setup_options(int argc, char** argv)
 {
-    char *str = NULL;
+    char* str = NULL;
     int pos, i;
 
     /* first set up defaults */
@@ -602,7 +594,7 @@ setup_options(int argc, char *argv[])
             options.want_audio = 0;
         } else if (strcmp(str, "-f") == 0) {
             options.want_fullscreen = 1;
-	} else if (strcmp(str, "-s") == 0) {
+    	} else if (strcmp(str, "-s") == 0) {
             options.want_4xscale = 0;
         } else if (strcmp(str, "-v") == 0) {
             options.want_debug++;
