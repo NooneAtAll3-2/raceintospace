@@ -308,7 +308,7 @@ static int read_config_file()
     char c[2];
 
     if (!f) {
-        INFO1("could not open config file");
+        LOG_INFO("could not open config file");
         return -1;
     }
 
@@ -335,7 +335,7 @@ static int read_config_file()
                     if (res != 0 && feof(f)) {
                         goto skip_newline;
                     } else if (res != 0) {
-                        NOTICE2("wrong value type for variable `%s'",
+                        LOG_NOTICE("wrong value type for variable `%s'",
                                 config_word);
                         goto skip_newline;
                     } else {
@@ -346,14 +346,14 @@ static int read_config_file()
 
             /* none matched */
             if (i == (int) ARRAY_LENGTH(config_strings)) {
-                NOTICE2("unknown variable in file `%s'",
+                LOG_NOTICE("unknown variable in file `%s'",
                         config_word);
                 goto skip_newline;
             }
         } else if (res == EOF) {
             break;
         } else {
-            NOTICE1("expected variable name");
+            LOG_NOTICE("expected variable name");
             goto skip_newline;
         }
 
@@ -381,11 +381,11 @@ static int write_default_config()
     f = open_savedat("config", "wt");
 
     if (!f) {
-        WARNING4("can't write defaults to file `%s/%s': %s\n",
+        LOG_WARNING("can't write defaults to file `%s/%s': %s\n",
                  options.dir_savegame, "config", strerror(errno));
         return -1;
     } else
-        NOTICE3("written defaults to file `%s/%s'",
+        LOG_NOTICE("written defaults to file `%s/%s'",
                 options.dir_savegame, "config");
 
     fprintf(f, "# This is the Advanced Configuration file for %s\n",
@@ -408,7 +408,7 @@ static int write_default_config()
     err = ferror(f);
 
     if (err) {
-        WARNING2("read error: %s", strerror(errno));
+        LOG_WARNING("read error: %s", strerror(errno));
     }
 
     fclose(f);
