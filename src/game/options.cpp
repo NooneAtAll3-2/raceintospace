@@ -39,14 +39,6 @@
 #define ENVIRON_DATADIR ("BARIS_DATA")
 #define ENVIRON_SAVEDIR ("BARIS_SAVE")
 
-#ifndef DEFAULT_DATADIR
-#  define DEFAULT_DATADIR (".")
-#endif
-
-#ifndef DEFAULT_SAVEDIR
-#  define DEFAULT_SAVEDIR (".")
-#endif
-
 #if !HAVE_GETENV
 #  if HAVE_SDL_GETENV
 #    define getenv SDL_getenv
