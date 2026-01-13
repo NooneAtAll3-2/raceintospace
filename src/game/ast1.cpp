@@ -79,6 +79,8 @@ enum ProfileDisplay {
                                                "AIR DEF. FORCE", "FOREIGN"};
 }
 
+uint8_t MaxSel;
+
 int AstSelectPrompt(char plr, int cost);
 void DispEight(int now, int loc);
 void DispEight2(int nw, int lc, int cnt);
