@@ -45,6 +45,7 @@
 #include "mission_util.h"
 #include "options.h"
 #include "pace.h"
+#include "random_utils.h"
 #include "sdlhelper.h"
 #include "utils.h"
 
