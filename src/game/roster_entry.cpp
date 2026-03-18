@@ -6,7 +6,7 @@
 #include <json/json.h>
 
 #include "options.h"
-#include "pace.h"
+#include "random_utils.h"
 #include "roster_group.h"
 
 RosterEntry::RosterEntry(const RosterGroup &group, const Json::Value &json_object)
