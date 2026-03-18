@@ -63,6 +63,7 @@
 #include "place.h"
 #include "port.h"
 #include "prefs.h"
+#include "random_utils.h"
 #include "records.h"
 #include "review.h"
 #include "sdlhelper.h"
