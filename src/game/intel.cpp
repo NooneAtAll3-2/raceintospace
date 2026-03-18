@@ -50,6 +50,7 @@
 #include "pace.h"
 #include "place.h"
 #include "port.h"
+#include "random_utils.h"
 #include "rdplex.h"
 #include "sdlhelper.h"
 
