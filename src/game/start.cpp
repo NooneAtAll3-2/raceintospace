@@ -40,6 +40,7 @@
 #include "options.h"
 #include "pace.h"
 #include "prest.h"
+#include "random_utils.h"
 
 
 void AssignMissionName(int plr, int pad);
