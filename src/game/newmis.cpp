@@ -37,6 +37,7 @@
 #include "mission_util.h"
 #include "place.h"
 #include "port.h"
+#include "random_utils.h"
 #include "rush.h"
 #include "sdlhelper.h"
 #include "state_utils.h"
