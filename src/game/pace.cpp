@@ -212,15 +212,6 @@ void bzdelay(int ticks)
     idle_loop_secs(ticks / 100.0);
 }
 
-int brandom(int limit)
-{
-    if (limit == 0) {
-        return 0;
-    }
-
-    return (int)(limit * (rand() / (RAND_MAX + 1.0)));
-}
-
 void StopAudio(char mode)
 {
     av_silence(AV_SOUND_CHANNEL);
