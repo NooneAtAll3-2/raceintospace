@@ -32,7 +32,7 @@
 #include "aipur.h"
 #include "Buzz_inc.h"
 #include "game_main.h"
-#include "pace.h"
+#include "random_utils.h"
 
 char Level_Check;
 enum Opponent_Status Cur_Status;
