@@ -24,7 +24,7 @@
 #include "display/graphics.h"
 #include "display/legacy_surface.h"
 
-#include "pace.h"
+#include "random_utils.h"
 
 
 static const double GRAVITY = 0.6;
