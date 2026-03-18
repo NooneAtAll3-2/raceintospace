@@ -41,8 +41,8 @@
 #include "logging.h"
 #include "museum.h"
 #include "options.h"   //Naut Randomize && Naut Compatibility, Nikakd, 10/8/10
-#include "pace.h"
 #include "port.h"
+#include "random_utils.h"
 #include "rdplex.h"
 #include "records.h"
 #include "sdlhelper.h"
