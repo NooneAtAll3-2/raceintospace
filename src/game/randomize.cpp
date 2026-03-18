@@ -45,7 +45,7 @@ RD cost is loosely based on the Basic Model
 #include "game_main.h"
 #include "gamedata.h"
 #include "gr.h"
-#include "pace.h"
+#include "random_utils.h"
 #include "sdlhelper.h"
 
 
