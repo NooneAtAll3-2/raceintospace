@@ -43,6 +43,7 @@
 #include "pace.h"
 #include "pbm.h"
 #include "place.h"
+#include "random_utils.h
 #include "replay.h"
 #include "sdlhelper.h"
 #include "start.h"
