@@ -55,6 +55,7 @@
 #include "pace.h"
 #include "place.h"
 #include "radar.h"
+#include "random_utils.h"
 #include "rdplex.h"
 #include "review.h"
 #include "rush.h"
