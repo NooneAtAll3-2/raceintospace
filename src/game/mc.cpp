@@ -50,6 +50,7 @@
 #include "state_utils.h"
 #include "sdlhelper.h"
 #include "randomize.h"
+#include "random_utils.h"
 
 LOG_DEFAULT_CATEGORY(mission)
 
