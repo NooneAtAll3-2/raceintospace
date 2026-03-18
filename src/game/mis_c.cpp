@@ -51,6 +51,7 @@
 #include "newmis.h"
 #include "pace.h"
 #include "place.h"
+#include "random_utils.h"
 #include "sdlhelper.h"
 #include "utils.h"
 
