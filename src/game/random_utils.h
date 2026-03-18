@@ -1,6 +1,6 @@
 #ifndef RANDOM_UTILS_H
 #define RANDOM_UTILS_H
 
-// brandom
+int brandom(int limit);
 
 #endif // RANDOM_UTILS_H
