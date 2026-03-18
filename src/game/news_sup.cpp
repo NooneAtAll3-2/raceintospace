@@ -34,6 +34,7 @@
 #include "hardware.h"
 #include "options.h"
 #include "pace.h"
+#include "random_utils.cpp"
 
 /**
  *
