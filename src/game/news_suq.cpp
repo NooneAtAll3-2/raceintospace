@@ -32,6 +32,7 @@
 #include "options.h"
 #include "pace.h"
 #include "place.h"
+#include "random_utils.h"
 #include "state_utils.h"
 
 
