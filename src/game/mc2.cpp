@@ -37,6 +37,7 @@
 #include "options.h"
 #include "pace.h"
 #include "prest.h"
+#include "random_utils.h"
 
 LOG_DEFAULT_CATEGORY(LOG_ROOT_CAT)
 
