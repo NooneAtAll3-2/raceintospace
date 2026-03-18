@@ -46,6 +46,7 @@
 #include "mmfile.h"
 #include "news_suq.h"
 #include "pace.h"
+#include "random_utils.h"
 #include "sdlhelper.h"
 #include "utils.h"
 
