@@ -54,6 +54,7 @@
 #include "options.h"   //Naut Randomize && Naut Compatibility, Nikakd, 10/8/10
 #include "pace.h"
 #include "place.h"
+#include "random_utils.h"
 #include "sdlhelper.h"
 
 
