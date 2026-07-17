@@ -604,7 +604,7 @@ SDL_Surface* SDL_Scale4x(SDL_Surface* src, SDL_Surface* dst)
 
     for (int y = 0; y < src->h; ++y) {
         uint8_t* from = (uint8_t *)src->pixels + y * src_pitch;
-        unit8_t* to = (uint8_t *)dst->pixels + 4 * y * dst_pitch;
+        uint8_t* to = (uint8_t *)dst->pixels + 4 * y * dst_pitch;
 
         for (int x = 0; x < src->w; ++x) {
             uint8_t* src_pixel = from + x * bpp;
