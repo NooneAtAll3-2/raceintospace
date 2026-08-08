@@ -68,10 +68,10 @@ LOG_DEFAULT_CATEGORY(filesys)
 static DIR* save_dir;
 
 /** used internally to find and open files */
-struct {
+struct file {
     FILE* handle;   /**< standard filehandle */
     char* path;     /**< path to file */
-} file;
+};
 
 /**
  * gamedata & savedata access functions
