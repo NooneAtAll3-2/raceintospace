@@ -61,6 +61,9 @@ std::string OldNewsCard(char plr, int card);
 
 void DrawBudget(char player, char* pStatus)
 {
+    auto& pData = Data->P[player];
+    auto& otherData = Data->P[other(player)];
+    
     FadeOut(2, 10, 0, 0);
     display::graphics.screen()->clear();
     ShBox(0, 0, 319, 47);
@@ -103,25 +106,15 @@ void DrawBudget(char player, char* pStatus)
     InBox(29, 85, 141, 121);
     
     // Draw the Prestige Screen
-    int i, j, max = 0, k, pscale;
-    char name[20], str[10];
 
-    k = (player == 0) ? 0 : 1;  // max only checks your prestige and guessed
-
-    for (i = 0; i < 5; i++) {  // value for other player
-        max = std::max(max, abs(Data->P[player].PrestHist[i][k]));
+    int max = 0;
+    int k = (player == 0) ? 0 : 1;  // max only checks your prestige and guessed
+    for (int i = 0; i < 5; i++) {  // value for other player
+        max = std::max(max, abs(pData.PrestHist[i][k]));
     }
 
-    if (player == 0) {
-        j = 1;
-        k = 1;
-    } else {
-        j = 0;
-        k = 1;
-    }
-
-    for (i = 0; i < 5; i++) {
-        max = std::max(max, abs(Data->P[j].PrestHist[i][k]));
+    for (int i = 0; i < 5; i++) {
+        max = std::max(max, abs(otherData.PrestHist[i][1]));
     }
 
     if (max < 20) {
@@ -137,7 +130,7 @@ void DrawBudget(char player, char* pStatus)
         draw_number(11, 87, max);
     }
 
-    pscale = max/2;    // Half the estimated prestige
+    int pscale = max/2;    // Half the estimated prestige
 
     // draw the splash image
     {
@@ -160,20 +153,16 @@ void DrawBudget(char player, char* pStatus)
     }
 
     if (player == 0) {
-        i = 0;
-        j = 1;
         display::graphics.setForegroundColor(5);
     } else {
-        i = 1;
-        j = 0;
         display::graphics.setForegroundColor(8);
     }
 
-    grMoveTo( 30, 103 - Data->P[i].PrestHist[4][0] * 8 / pscale);
-    grLineTo( 57, 103 - Data->P[i].PrestHist[3][0] * 8 / pscale);
-    grLineTo( 85, 103 - Data->P[i].PrestHist[2][0] * 8 / pscale);
-    grLineTo(113, 103 - Data->P[i].PrestHist[1][0] * 8 / pscale);
-    grLineTo(140, 103 - Data->P[i].PrestHist[0][0] * 8 / pscale);
+    grMoveTo( 30, 103 - pData.PrestHist[4][0] * 8 / pscale);
+    grLineTo( 57, 103 - pData.PrestHist[3][0] * 8 / pscale);
+    grLineTo( 85, 103 - pData.PrestHist[2][0] * 8 / pscale);
+    grLineTo(113, 103 - pData.PrestHist[1][0] * 8 / pscale);
+    grLineTo(140, 103 - pData.PrestHist[0][0] * 8 / pscale);
 
     if (player == 0) {
         display::graphics.setForegroundColor(8);
@@ -181,14 +170,14 @@ void DrawBudget(char player, char* pStatus)
         display::graphics.setForegroundColor(5);
     }
 
-    grMoveTo( 30, 103 - Data->P[j].PrestHist[4][1] * 8 / pscale);
-    grLineTo( 57, 103 - Data->P[j].PrestHist[3][1] * 8 / pscale);
-    grLineTo( 85, 103 - Data->P[j].PrestHist[2][1] * 8 / pscale);
-    grLineTo(113, 103 - Data->P[j].PrestHist[1][1] * 8 / pscale);
-    grLineTo(140, 103 - Data->P[j].PrestHist[0][1] * 8 / pscale);
+    grMoveTo( 30, 103 - otherData.PrestHist[4][1] * 8 / pscale);
+    grLineTo( 57, 103 - otherData.PrestHist[3][1] * 8 / pscale);
+    grLineTo( 85, 103 - otherData.PrestHist[2][1] * 8 / pscale);
+    grLineTo(113, 103 - otherData.PrestHist[1][1] * 8 / pscale);
+    grLineTo(140, 103 - otherData.PrestHist[0][1] * 8 / pscale);
 
     display::graphics.setForegroundColor(5);
-    draw_string(165, 89, "200");
+    draw_string(165,  89, "200");
     draw_string(167, 109, "150");
     draw_string(167, 129, "100");
     draw_string(171, 149, "50");
@@ -196,6 +185,7 @@ void DrawBudget(char player, char* pStatus)
     display::graphics.setForegroundColor(1);
 
     int placeDate;
+    char name[20]{};
     if (Data->Season == 0) {
         placeDate = 108;
         strcpy(&name[0], "SPRING 19");
@@ -204,6 +194,7 @@ void DrawBudget(char player, char* pStatus)
         placeDate = 116;
     }
 
+    char str[10]{};
     snprintf(&str[0], sizeof(str), "%d", Data->Year);
 
     strcat(&name[0], &str[0]);
@@ -212,9 +203,9 @@ void DrawBudget(char player, char* pStatus)
 
     display::graphics.setForegroundColor(11);
     draw_string(177, 59, "PROJECTED BUDGET: ");
-    draw_megabucks(0, 0, Data->P[player].Budget);
+    draw_megabucks(0, 0, pData.Budget);
     draw_string(42, 59, "CASH: ");
-    draw_megabucks(0, 0, Data->P[player].Cash);
+    draw_megabucks(0, 0, pData.Cash);
 
     display::graphics.setForegroundColor(1);
     draw_string(13, 105, "0");
@@ -277,51 +268,41 @@ void DrawBudget(char player, char* pStatus)
     grLineTo(311, 107);
 
     for (int i = 187; i < 312; i += 2) {
-        display::graphics.legacyScreen()->setPixel(i, 157, 4);
-        display::graphics.legacyScreen()->setPixel(i, 137, 4);
-        display::graphics.legacyScreen()->setPixel(i, 117, 4);
-        display::graphics.legacyScreen()->setPixel(i, 97, 4);
+        int y_coords[4] {157,137,117,97};
+        for (int y : y_coords) {
+            display::graphics.legacyScreen()->setPixel(i, y, 4);
+        }
     }
 
     display::graphics.setForegroundColor(4);
-    draw_number(298, 174, Data->Year);
-    draw_number(271, 174, Data->Year - 1);
-    draw_number(248, 174, Data->Year - 2);
-    draw_number(222, 174, Data->Year - 3);
-    draw_number(194, 174, Data->Year - 4);
-
-    if (player == 0) {
-        for (int i = 0; i < 5; i++) {
-            int gameyear = Data->Year - 57 + i;
-            fill_rectangle(197 + i * 26, 164 - (Data->P[0].BudgetHistory[gameyear] * 74) / 200,  190 + i * 26, 164, 6);
-            fill_rectangle(206 + i * 26, 164 - (Data->P[1].BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 164, 9);
-            fill_rectangle(196 + i * 26, 164 - (Data->P[0].BudgetHistory[gameyear] * 74) / 200,  190 + i * 26, 163, 5);
-            fill_rectangle(205 + i * 26, 164 - (Data->P[1].BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 163, 8);
-        }
-
-        fill_rectangle(176, 185, 182, 189, 6);
-        fill_rectangle(176, 185, 181, 188, 5);
-        fill_rectangle(297, 185, 303, 189, 9);
-        fill_rectangle(297, 185, 302, 188, 8);
-        display::graphics.setForegroundColor(1);
-        draw_string(187, 189, "U.S.A.");
-        draw_string(262, 189, "U.S.S.R.");
+    int x_coords[5]{298,271,248,222,194};
+    for (int i=0; i<5; ++i) {
+        draw_number(x_coords[i], 174, Data->Year - i);
     }
 
-    if (player == 1) {
-        for (int i = 0; i < 5; i++) {
-            int gameyear = Data->Year - 57 + i;
-            fill_rectangle(197 + i * 26, 164 - (Data->P[1].BudgetHistory[gameyear] * 74) / 200,  190 + i * 26, 164, 9);
-            fill_rectangle(206 + i * 26, 164 - (Data->P[0].BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 164, 6);
-            fill_rectangle(196 + i * 26, 164 - (Data->P[1].BudgetHistory[gameyear] * 74) / 200,  190 + i * 26, 163, 8);
-            fill_rectangle(205 + i * 26, 164 - (Data->P[0].BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 163, 5);
-        }
+    int colors[2][4] = {{6,9,5,8},
+                        {9,6,8,5}};
+    for (int i = 0; i < 5; i++) {
+        int gameyear = Data->Year - 57 + i;
+        fill_rectangle(197 + i * 26, 164 - (pData.BudgetHistory[gameyear]      * 74) / 200, 190 + i * 26, 164, colors[player][0]);
+        fill_rectangle(206 + i * 26, 164 - (otherData.BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 164, colors[player][1]);
+        fill_rectangle(196 + i * 26, 164 - (pData.BudgetHistory[gameyear]      * 74) / 200, 190 + i * 26, 163, colors[player][2]);
+        fill_rectangle(205 + i * 26, 164 - (otherData.BudgetHistoryF[gameyear] * 74) / 200, 199 + i * 26, 163, colors[player][3]);
+    }
 
-        fill_rectangle(176, 185, 182, 189, 9);
-        fill_rectangle(176, 185, 181, 188, 8);
-        fill_rectangle(297, 185, 303, 189, 6);
-        fill_rectangle(297, 185, 302, 188, 5);
-        display::graphics.setForegroundColor(1);
+    int colors2[2][4] = {{6,5,9,8},
+                         {9,8,6,5}};
+    fill_rectangle(176, 185, 182, 189, colors2[player][0]);
+    fill_rectangle(176, 185, 181, 188, colors2[player][1]);
+    fill_rectangle(297, 185, 303, 189, colors2[player][2]);
+    fill_rectangle(297, 185, 302, 188, colors2[player][3]);
+
+    display::graphics.setForegroundColor(1);
+    
+    if (player == 0) {
+        draw_string(187, 189, "U.S.A.");
+        draw_string(262, 189, "U.S.S.R.");
+    } else {
         draw_string(187, 189, "U.S.S.R.");
         draw_string(262, 189, "U.S.A.");
     }
@@ -335,7 +316,7 @@ void DrawPastExp(char player, char* pStatus)
     fill_rectangle(31, 149, 124, 182, 7 + 3 * player);
     display::graphics.setForegroundColor(4);
     display::graphics.legacyScreen()->outlineRect(30, 148, 125, 183, 4);
-    display::graphics.legacyScreen()->outlineRect(54, 148, 77, 183, 4);
+    display::graphics.legacyScreen()->outlineRect(54, 148,  77, 183, 4);
     display::graphics.legacyScreen()->outlineRect(77, 148, 101, 183, 4);
     display::graphics.legacyScreen()->outlineRect(30, 157, 125, 165, 4);
     display::graphics.legacyScreen()->outlineRect(30, 165, 125, 174, 4);
@@ -477,14 +458,15 @@ void Budget(char player)
 
 void DrawPreviousMissions(char plr)
 {
+    auto& pData = Data->P[plr];
     InBox(5, 41, 314, 91);
     fill_rectangle(6, 42, 313, 90, 0);
     display::graphics.setForegroundColor(2);
 
     int misnum = 0;
-    int i = Data->P[plr].PastMissionCount - olderMiss;
-    while (i > (Data->P[plr].PastMissionCount - olderMiss - 3) && i >= 0) {
-        auto& hist = Data->P[plr].History[i];
+    int i = pData.PastMissionCount - olderMiss;
+    while (i > (pData.PastMissionCount - olderMiss - 3) && i >= 0) {
+        auto& hist = pData.History[i];
         const mStr mission = GetMissionPlan(hist.MissionCode);
 
         draw_string(9, 49 + 16 * misnum, hist.MissionName[0]);
@@ -567,11 +549,11 @@ void DrawViewing(char plr)
 
 void DrawViewstandNews(const std::string& card, int got)
 {
-    int xx = 10, yy = 122, i;
+    int xx = 10, yy = 122;
     const char* buf = card.c_str();
     display::graphics.setForegroundColor(1);
 
-    for (i = 0; i < got; i++) {
+    for (int i = 0; i < got; i++) {
         while (*buf != 'x') {
             buf++;
         }
@@ -679,32 +661,34 @@ std::string OldNewsCard(char plr, int card)
 
 void Viewing(char plr)
 {
-    int ctop, bline = 0, oset, maxcard;
+    auto& pData = Data->P[plr];
     olderMiss = 1;
-    maxcard = oset = Data->P[plr].eCount - 1;
-    const int turn = 2 * (Data->Year - 57) + Data->Season;
 
+    int maxcard = pDara.eCount - 1;
     if (maxcard < 0 || maxcard > turn) {
         LOG_ERROR("Invalid event card count %d: Must be in range (0, %d]",
-               Data->P[plr].eCount, turn + 1);
+               pData.eCount, turn + 1);
         return;
     }
 
-    if (Data->P[plr].eCount != turn + 1) {
+    const int turn = 2 * (Data->Year - 57) + Data->Season;
+    if (pData.eCount != turn + 1) {
         LOG_WARNING("Unexpected event count: turn=%d, event=%d", turn + 1,
-                 Data->P[plr].eCount);
+                 pData.eCount);
     }
 
     DrawViewing(plr);
+    
+    int oset = pData.eCount - 1;
     std::string card = OldNewsCard(plr, oset);
-    bline = MAX(0, std::count(card.begin(), card.end(), 'x') - 8);
-    ctop = 0;
+    int ctop = 0;
     DrawViewstandNews(card, ctop);
     InBox(244, 184, 313, 194);
     FadeIn(2, 10, 0, 0);
     music_start(M_SOVTYP);
     WaitForMouseUp();
 
+    int bline = MAX(0, std::count(card.begin(), card.end(), 'x') - 8);
     while (1) {
         key = 0;
         GetMouse();
