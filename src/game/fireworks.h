@@ -29,7 +29,7 @@ public:
     Fireworks(int player);
 
     void advance();
-    void clear();
+    void clearDisplay();
     void step();
 private:
     struct Burst {
@@ -48,8 +48,6 @@ private:
     std::unique_ptr<Burst[]> mBomb;
     std::unqiue_ptr<display::LegacySurface> mBackground;
 
-    void bombStep();
-    void clearDisplay();
     uint8_t cycleColor(uint8_t color);
     void drawFrame();
     bool inView(int x, int y)
