@@ -38,22 +38,10 @@ Fireworks::Fireworks(int player)
 {
     unsigned int bgWidth = display::graphics.legacyScreen()->width();
     unsigned int bgHeight = display::graphics.legacyScreen()->height();
-    mBackground = new display::LegacySurface(bgWidth, bgHeight);
+    mBackground = std::make_unique<display::LegacySurface>(bgWidth, bgHeight);
     mBackground->copyFrom(display::graphics.legacyScreen(),
                           0, 0, bgWidth - 1, bgHeight - 1);
-    mBomb = new Burst[mParticles];
-}
-
-
-Fireworks::~Fireworks()
-{
-    if (mBackground) {
-        delete mBackground;
-    }
-
-    if (mBomb) {
-        delete[] mBomb;
-    }
+    mBomb = std::make_unique<Burst[]>(mParticles);
 }
 
 
@@ -131,7 +119,7 @@ void Fireworks::bombStep()
 
 void Fireworks::clearDisplay()
 {
-    if (!mBackground) {
+    if (mBackground == nullptr) {
         return;
     }
 
@@ -245,4 +233,5 @@ double Fireworks::randomAngle()
     // If using rand(), #include <cstdlib>
     // return 2.0 * PI * (double(rand()) / double(RAND_MAX + 1.0));
     return double(brandom(2 * PI));
+    // is this code only shooting in 6 directions?
 }
