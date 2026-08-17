@@ -27,7 +27,6 @@ class Fireworks
 {
 public:
     Fireworks(int player);
-    ~Fireworks();
 
     void advance();
     void clear();
@@ -46,8 +45,8 @@ private:
     const unsigned int mParticles;
     int mBombAge;
     const int mPlayer;
-    Burst* mBomb;
-    display::LegacySurface* mBackground;
+    std::unique_ptr<Burst> mBomb;
+    std::unqiue_ptr<display::LegacySurface> mBackground;
 
     void bombStep();
     void clearDisplay();
