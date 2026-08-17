@@ -46,36 +46,9 @@ Fireworks::Fireworks(int player)
 
 
 /**
- * Advance the animation according to time passed.
- *
- * TODO: Don't bother updating animation unless a minimum time
- *   interval has passed.
- * TODO: So that animations remain accurate, position/velocity must
- *   be updated every so many time intervals - unless an algorithm
- *   can be used instead.
- * TODO: If enough time has passed (1+ bomb life spans) just reinit
- *   the bomb and advance the appropriate amount of time.
- */
-void Fireworks::advance()
-{
-    step();
-}
-
-
-/**
- * Erase the animation.
- *
- * Overwrites the firework animation with the buffered background.
- */
-void Fireworks::clear()
-{
-    clearDisplay();
-}
-
-/**
  * Advance the animation by a single frame.
  */
-void Fireworks::step()
+void Fireworks::advance()
 {
     bool bombIsDead = mBombAge > mMaxBombLife;
 
@@ -88,6 +61,30 @@ void Fireworks::step()
     }
 
     drawFrame();
+}
+
+
+/**
+ * Erase the animation.
+ *
+ * Overwrites the firework animation with the buffered background.
+ */
+void Fireworks::clearDisplay()
+{
+    if (mBackground == nullptr) {
+        return;
+    }
+
+    // Could optimize by skipping over pixels that _were_ dead.
+    for (unsigned int i = 0; i < mParticles; i++) {
+        int xx = mBomb[i].position[0];
+        int yy = mBomb[i].position[1];
+
+        if (inView(xx, yy)) {
+            display::graphics.legacyScreen()->setPixel(
+                xx, yy, mBackground->getPixel(xx, yy));
+        }
+    }
 }
 
 
@@ -115,26 +112,6 @@ void Fireworks::bombStep()
 
     mBombAge++;
 }
-
-
-void Fireworks::clearDisplay()
-{
-    if (mBackground == nullptr) {
-        return;
-    }
-
-    // Could optimize by skipping over pixels that _were_ dead.
-    for (unsigned int i = 0; i < mParticles; i++) {
-        int xx = mBomb[i].position[0];
-        int yy = mBomb[i].position[1];
-
-        if (inView(xx, yy)) {
-            display::graphics.legacyScreen()->setPixel(
-                xx, yy, mBackground->getPixel(xx, yy));
-        }
-    }
-}
-
 
 uint8_t Fireworks::cycleColor(uint8_t color)
 {
@@ -233,5 +210,4 @@ double Fireworks::randomAngle()
     // If using rand(), #include <cstdlib>
     // return 2.0 * PI * (double(rand()) / double(RAND_MAX + 1.0));
     return double(brandom(2 * PI));
-    // is this code only shooting in 6 directions?
 }
