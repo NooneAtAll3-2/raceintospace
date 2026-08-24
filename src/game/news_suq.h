@@ -2,7 +2,7 @@
 #define NEWS_SUQ_H
 
 int rollSixDie(int nrolls);
-char CheckCrewOK(char plr, char pad);
-char REvent(char plr);
+bool CheckCrewOK(char plr, char pad);
+bool REvent(char plr);
 
 #endif // NEWS_SUQ_H
