@@ -47,7 +47,7 @@ int rollSixDie(int nrolls) {
  *
  * \return true (1) if need to scrub mission because of crews
  */
-char CheckCrewOK(char plr, char pad)
+bool CheckCrewOK(char plr, char pad)
 {
     BuzzData& pData = Data->P[plr];
     auto& mission = pData.Mission[pad];
@@ -84,9 +84,9 @@ char CheckCrewOK(char plr, char pad)
 }
 
 
-char REvent(char plr)
+bool REvent(char plr)
 {
-    int NoMods = 1, i = 0, j = 0;
+    int NoMods = 1, i = 0;
 
     BuzzData& pData = Data->P[plr];
                 
@@ -94,7 +94,7 @@ char REvent(char plr)
         pData.Budget = 40;
     }
 
-    j = 5; // for Budget over 160
+    int j = 5; // for Budget over 160
     int range[6] = {0, 50, 90, 110, 140, 160}; // Budget ranges
         
     for (int k = 0; k < 5; k++) {
