@@ -2,7 +2,7 @@
 #define NEWS_SUQ_H
 
 int rollSixDie(int nrolls);
-bool CrewNeedsReplacement(char plr, char pad);
+bool MissionCrewCantFly(char plr, char pad);
 char REvent(char plr);
 
 #endif // NEWS_SUQ_H
