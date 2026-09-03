@@ -1,6 +1,7 @@
 #ifndef BZ_ANIMATION_H
 #define BZ_ANIMATION_H
 
+#include <cstddef>
 #include <memory>
 #include <stdint.h>
 #include <vector>
@@ -21,11 +22,9 @@
 class BZAnimation
 {
 public:
-    typedef boost::shared_ptr<BZAnimation> Ptr;
+    using Ptr = boost::shared_ptr<BZAnimation>;
 
-    static Ptr load(const char* file, const char* id, int x, int y);
-
-    ~BZAnimation();
+    static Ptr load(std::string_view filename, std::string_view id, int x, int y);
 
     void advance();
 
@@ -38,7 +37,7 @@ private:
     std::vector<std::unique_ptr<uint8_t[]>> mFrameData;
 
     BZAnimation(AnimType header, display::Palette palette,
-                std::vector<uint8_t*> frames, int x, int y);
+                std::vector<std::unique_ptr<uint8_t[]>>&& frames, int x, int y);
 };
 
 #endif // BZ_ANIMATION_H
