@@ -40,7 +40,7 @@ namespace
 {
 size_t ImportAnimType(FILE* fin, AnimType& target);
 size_t ImportBlockHead(FILE* fin, BlockHead& target);
-uint8_t* ReadFrame(FILE* fin, int width, int height);
+std::unique_ptr<uint8_t[]> ReadFrame(FILE* fin, int width, int height);
 display::Palette ReadPalette(FILE* fin, int offset, int colors);
 void SeekAnimation(FILE* fin, const char* name);
 };
@@ -77,24 +77,21 @@ BZAnimation::Ptr BZAnimation::load(
         throw IOException(msg);
     }
 
-    AnimType header;
-
-    std::vector<uint8_t*> frames;
-
     SeekAnimation(fin, id);
 
+    AnimType header;
     ImportAnimType(fin, header);
 
     display::Palette palette =
         ReadPalette(fin, header.cOff, header.cNum);
 
+    std::vector<std::unique_ptr<uint8_t[]>> frames;
     for (int i = 0; i < header.fNum; i++) {
-        uint8_t* pixels = ReadFrame(fin, header.w, header.h);
-        frames.push_back(pixels);
+        frames.push_back(ReadFrame(fin, header.w, header.h));
     }
 
     BZAnimation::Ptr animation(
-        new BZAnimation(header, palette, frames, x, y));
+        new BZAnimation(header, palette, std::move(frames), x, y));
 
     return animation;
 }
@@ -115,10 +112,10 @@ BZAnimation::Ptr BZAnimation::load(
  */
 BZAnimation::BZAnimation(AnimType header,
                          display::Palette palette,
-                         std::vector<uint8_t*> frames,
+                         std::vector<std::unique_ptr<uint8_t[]>>&& frames,
                          int x,
                          int y)
-    : mDisplay(nullptr), mHeader(header), mFrameData(frames)
+    : mDisplay(nullptr), mHeader(header), mFrameData(std::move(frames))
 {
     if (x < 0 || x >= display::Graphics::WIDTH) {
         LOG_WARNING("Animation param x=%d out of range.", x);
@@ -131,7 +128,7 @@ BZAnimation::BZAnimation(AnimType header,
     mX = x;
     mY = y;
 
-    mDisplay = new display::LegacySurface(mHeader.w, mHeader.h);
+    mDisplay = std::make_unique<display::LegacySurface>(mHeader.w, mHeader.h);
     mDisplay->palette().copy_from(
         display::graphics.legacyScreen()->palette());
 
@@ -141,21 +138,6 @@ BZAnimation::BZAnimation(AnimType header,
         mDisplay->palette());
 
     mCurrentFrame = 0;
-}
-
-
-/**
- * Clean up outstanding memory demands, particularly the pixel data.
- */
-BZAnimation::~BZAnimation()
-{
-    if (mDisplay) {
-        delete mDisplay;
-    }
-
-    for (int i = 0; i < mFrameData.size(); i++) {
-        delete[] mFrameData[i];
-    }
 }
 
 
@@ -173,7 +155,7 @@ void BZAnimation::advance()
     }
 
     if (mCurrentFrame < mHeader.fNum) {
-        uint8_t* pixels = mFrameData[mCurrentFrame];
+        uint8_t* pixels = mFrameData[mCurrentFrame].get();
         memcpy(mDisplay->pixels(), pixels, mDisplay->width() * mDisplay->height());
 
         // dply->palette().copy_from(display::graphics.legacyScreen()->palette());
@@ -250,7 +232,7 @@ size_t ImportBlockHead(FILE* fin, BlockHead& target)
  * \param height  The frame height (in pixels).
  * \return  uncompressed pixel data.
  */
-uint8_t* ReadFrame(FILE* fin, int width, int height)
+std::unique_ptr<uint8_t[]> ReadFrame(FILE* fin, int width, int height)
 {
     assert(fin);
 
@@ -284,7 +266,7 @@ uint8_t* ReadFrame(FILE* fin, int width, int height)
 
     frame[width * height - 1] = frame[width * height - 2];
 
-    return frame.release();
+    return frame;
 }
 
 
