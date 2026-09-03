@@ -1,6 +1,7 @@
 #ifndef BZ_ANIMATION_H
 #define BZ_ANIMATION_H
 
+#include <memory>
 #include <stdint.h>
 #include <vector>
 
@@ -32,9 +33,9 @@ private:
     int mX, mY;
     int mCurrentFrame;
     // mDisplay is where frames are staged before being drawn.
-    display::LegacySurface* mDisplay;
+    std::unique_ptr<display::LegacySurface> mDisplay;
     AnimType mHeader;
-    std::vector<uint8_t*> mFrameData;
+    std::vector<std::unique_ptr<uint8_t[]>> mFrameData;
 
     BZAnimation(AnimType header, display::Palette palette,
                 std::vector<uint8_t*> frames, int x, int y);
