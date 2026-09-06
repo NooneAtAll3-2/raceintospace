@@ -99,34 +99,10 @@ void PadDraw(char plr, char pad)
         // Show Duration level for manned missions with Duration steps: this keeps the Mission[pad].Duration
         // variable from continuing to show Duration level if mission is scrubbed or downgraded - Leon
     {
-        switch (mission.Duration) {
-        case 1:
-            draw_string(0, 0, "A");
-            break;
-
-        case 2:
-            draw_string(0, 0, "B");
-            break;
-
-        case 3:
-            draw_string(0, 0, "C");
-            break;
-
-        case 4:
-            draw_string(0, 0, "D");
-            break;
-
-        case 5:
-            draw_string(0, 0, "E");
-            break;
-
-        case 6:
-            draw_string(0, 0, "F");
-            break;
-
-        default:
+        if (mission.Duration == 0) {
             draw_string(0, 0, "NONE");
-            break;
+        } else {
+            draw_character('A' + mission.Duration - 1);
         }
     } else {
         if (primary_crew >= 0 || backup_crew >= 0) {
@@ -411,8 +387,10 @@ void ShowPad(char plr, char pad)
         key = 0;
         GetMouse();
 
-        if ((launchpad_status == LAUNCHPAD_OPERATIONAL && x >= 244 && y >= 181 && x <= 314 && y <= 193 && mousebuttons > 0 && MissionCode != Mission_None)
-            || (launchpad_status == LAUNCHPAD_OPERATIONAL && MissionCode != Mission_None && key == 'S')) {
+        if ((x >= 244 && y >= 181 && x <= 314 && y <= 193 && mousebuttons > 0)
+            || (key == 'S')) {
+            if (launchpad_status != LAUNCHPAD_OPERATIONAL) continue;
+            if (MissionCode == Mission_None) continue;
             // Scrub Mission
             InBox(244, 181, 314, 193);
             key = 0;
@@ -428,51 +406,53 @@ void ShowPad(char plr, char pad)
             if (MissionCode == Mission_None) {
                 return;
             }
-        } else if ((launchpad_status == LAUNCHPAD_OPERATIONAL && x >= 169 && y >= 181 && x <= 238 && y <= 193 && mousebuttons > 0 && MissionCode != Mission_None)
-            || (launchpad_status == LAUNCHPAD_OPERATIONAL && MissionCode != Mission_None && key == 'D')) {
+        } else if ((x >= 169 && y >= 181 && x <= 238 && y <= 193 && mousebuttons > 0)
+                   || (key == 'D')) {
+            if (launchpad_status != LAUNCHPAD_OPERATIONAL) continue;
+            if (MissionCode == Mission_None) continue;
             // Delay Mission
 
             // There are restrictions on Mars/Jupiter/Saturn Flybys, so
             // check that this mission _could_ be launched at this time.
-            bool validLaunch =
-                MissionTimingOk(MissionCode,
-                                Data->Year, Data->Season);
 
-            if (validLaunch) {
-                InBox(169, 181, 238, 193);
-                WaitForMouseUp();
+            if (! MissionTimingOk(MissionCode, Data->Year, Data->Season)) continue;
+            
+            InBox(169, 181, 238, 193);
+            WaitForMouseUp();
 
-                if (key > 0) {
-                    delay(100);
-                }
+            if (key > 0) {
+                delay(100);
+            }
 
-                bool conflict = false;
+            bool conflict = false;
 
-                // Check if there's a Future Mission which would be
-                // displaced by delaying the mission.
-                if (Data->P[plr].Future[pad].MissionCode) {
+            // Check if there's a Future Mission which would be
+            // displaced by delaying the mission.
+            if (Data->P[plr].Future[pad].MissionCode != Mission_None) {
+                conflict = true;
+            } else if (mission.Joint) {
+                int other = (mission.part) ?
+                            pad - 1 : pad + 1;
+
+                if (Data->P[plr].Future[other].MissionCode) {
                     conflict = true;
-                } else if (mission.Joint) {
-                    int other = (mission.part) ?
-                                pad - 1 : pad + 1;
-
-                    if (Data->P[plr].Future[other].MissionCode) {
-                        conflict = true;
-                    }
-                }
-
-                // Confirm that the mission should be delayed.
-                if (Help(conflict ? "i163" : "i162") > 0) {
-                    DelayMission(plr, pad);
-                    OutBox(169, 181, 238, 193);
-                    break;
-                } else {
-                    OutBox(169, 181, 238, 193);
                 }
             }
-        } else if ((launchpad_status <= Data->P[plr].Cash && launchpad_status >= LAUNCHPAD_DAMAGED_MARGIN && x >= 169 && y >= 181 && x <= 314 && y <= 193 && mousebuttons > 0)
-                   || (key == 'F' && launchpad_status >= LAUNCHPAD_DAMAGED_MARGIN && launchpad_status <= Data->P[plr].Cash)) {
-            // Scrub Mission
+
+            // Confirm that the mission should be delayed.
+            if (Help(conflict ? "i163" : "i162") > 0) {
+                DelayMission(plr, pad);
+                OutBox(169, 181, 238, 193);
+                break;
+            } else {
+                OutBox(169, 181, 238, 193);
+
+            }
+        } else if ((x >= 169 && y >= 181 && x <= 314 && y <= 193 && mousebuttons > 0)
+                   || (key == 'F')) {
+            if (launchpad_status < LAUNCHPAD_DAMAGED_MARGIN) continue;
+            if (Data->P[plr].Cash < launchpad_status) continue;
+            // Fix launchpad
             InBox(169, 181, 314, 193);
             key = 0;
             WaitForMouseUp();
