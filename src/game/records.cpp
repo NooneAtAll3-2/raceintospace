@@ -2106,7 +2106,7 @@ void RecChange(int i, int j, int k, int temp, int max, char Rec_Change)
             if (old_record.month > mission.Month) return false;
 
             return false;
-        }
+        };
 
         switch (rec[k][0].place) {
         case 1:
