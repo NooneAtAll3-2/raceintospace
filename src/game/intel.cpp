@@ -1229,15 +1229,11 @@ void ImpHard(char plr, char hd, char dx)
  */
 void UpDateTable(char plr)
 {
-    // based on prestige
-    char j;
-    char p = other(plr);
     auto& otherData = Data->P[other(plr)];
 
+    // based on prestige
     if (otherData.LMpts > 0) {
-        j = brandom(100);
-
-        if (j < 60) {
+        if (brandom(10) < 6) {
             ImpHard(plr, MANNED_HARDWARE, MANNED_HW_TWO_MAN_MODULE);
         } else {
             ImpHard(plr, MANNED_HARDWARE, MANNED_HW_ONE_MAN_MODULE);
@@ -1246,7 +1242,7 @@ void UpDateTable(char plr)
 
     for (int i = 0; i < MAXIMUM_PRESTIGE_NUM; i++) {
         if (Data->Prestige[i].Place != other(plr) && Data->Prestige[i].mPlace != other(plr)) continue;
-        {
+        
         switch (i) {
         case Prestige_OrbitalSatellite:
             ImpHard(plr, PROBE_HARDWARE, PROBE_HW_ORBITAL);
@@ -1295,9 +1291,8 @@ void UpDateTable(char plr)
 
         case Prestige_MannedLunarPass:
             ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
-            j = brandom(100);
 
-            if (j < 70) {
+            if (brandom(10) < 7) {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
             } else {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
@@ -1307,9 +1302,8 @@ void UpDateTable(char plr)
 
         case Prestige_MannedLunarOrbit:
             ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
-            j = brandom(100);
 
-            if (j < 70) {
+            if (brndom(10) < 7) {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
             } else {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
@@ -1371,8 +1365,6 @@ void IntelPhase(char plr, char pt)
     if (BriefingIndex() < Data->P[plr].PastIntel[0].cur) {
         return;
     }
-
-    int i = brandom(1000);
 
     int Plr_Level = (plr == 0)? Data->Def.Lev1
                               : Data->Def.Lev2;
