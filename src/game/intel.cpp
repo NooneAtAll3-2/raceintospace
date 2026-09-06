@@ -530,8 +530,8 @@ void XSpec(char plr, char mis, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 96, "TYPE: ");
+    
     display::graphics.setForegroundColor(9);
-
     if (plan.Jt == 1) {
         draw_string(0, 0, "JOINT LAUNCH");
     } else {
@@ -540,8 +540,8 @@ void XSpec(char plr, char mis, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 112, "DOCKING: ");
+    
     display::graphics.setForegroundColor(9);
-
     if (plan.Doc == 1) {
         draw_string(0, 0, "YES");
     } else {
@@ -550,8 +550,8 @@ void XSpec(char plr, char mis, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 128, "DURATION: ");
+    
     display::graphics.setForegroundColor(9);
-
     if (plan.Dur >= 1) {
         draw_string(0, 0, "YES");
     } else {
@@ -559,20 +559,10 @@ void XSpec(char plr, char mis, char year)
     }
 
     display::graphics.setForegroundColor(1);
-    draw_string(33, 155, "THE ");
-
     if (plr == 0) {
-        draw_string(0, 0, "CIA ");
+        draw_string(33, 155, "THE CIA REPORTS THAT THE SOVIET UNION IS");
     } else {
-        draw_string(0, 0, "KGB ");
-    }
-
-    draw_string(0, 0, "REPORTS THAT THE ");
-
-    if (plr == 0) {
-        draw_string(0, 0, "SOVIET UNION IS");
-    } else {
-        draw_string(0, 0, "UNITED STATES IS");
+        draw_string(33, 155, "THE KGB REPORTS THAT THE UNITED STATES IS");
     }
 
     draw_string(33, 169, "PLANNING A ");
@@ -637,39 +627,23 @@ void Special(char plr, int ind)
     }
 
     display::graphics.setForegroundColor(1);
-    draw_string(33, 155, "THE ");
-
     if (plr == 0) {
-        draw_string(0, 0, "CIA ");
+        draw_string(33, 155, "THE CIA REPORTS THAT THE SOVIET UNION HAS ");
     } else {
-        draw_string(0, 0, "KGB ");
+        draw_string(33, 155, "THE KGB REPORTS THAT THE UNITED STATES HAS ");
     }
-
-    draw_string(0, 0, "REPORTS THAT THE ");
-
-    if (plr == 0) {
-        draw_string(0, 0, "SOVIET UNION HAS ");
-    } else {
-        draw_string(0, 0, "UNITED STATES HAS ");
-    }
-
-    draw_string(33, 169, "PURCHASED ");
-    draw_string(0, 0, "A NEW");
+    draw_string(33, 169, "PURCHASED A NEW");
     
     display::graphics.setForegroundColor(9);
     if (ind >= 5) {
         draw_string(0, 0, " GROUP OF ");
 
         if (plr == 0) {
-            draw_string(0, 0, "COSMO");
+            draw_string(0, 0, "COSMONAUTS ");
         } else {
-            draw_string(0, 0, "ASTRO");
+            draw_string(0, 0, "ASTRONAUTS ");
         }
-
-        draw_string(0, 0, "NAUTS ");
-    }
-
-    else {
+    } else {
         draw_string(0, 0, " LAUNCH FACILITY ");
     }
 
@@ -760,18 +734,16 @@ void BackIntel(char plr, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 75, "CLASS: ");
+    
     display::graphics.setForegroundColor(9);
-
     switch (intel.prog) {
     case 0:
         if (intel.index >= 5 && intel.index <= 6) {
             if (plr == 0) {
-                draw_string(39, 82, "COSMO");
+                draw_string(39, 82, "COSMONAUTS");
             } else {
-                draw_string(39, 81, "ASTRO");
+                draw_string(39, 81, "ASTRONAUTS");
             }
-
-            draw_string(0, 0, "NAUTS");
         } else if (intel.index >= 3 && intel.index <= 4) {
             draw_string(39, 81, "LAUNCH FACILITY");
         } else {
@@ -815,8 +787,8 @@ void BackIntel(char plr, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 96, "CREW: ");
+    
     display::graphics.setForegroundColor(9);
-
     if (intel.prog == 2) {
         if (intel.index >= 0 && intel.index <= 2) {
             draw_number(0, 0, intel.index + 1);
@@ -833,15 +805,15 @@ void BackIntel(char plr, char year)
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 112, "PROGRAM: ");
+    
     display::graphics.setForegroundColor(9);
-
     Equipment &hardware = HardwareProgram(other(plr), intel.prog, intel.index);
     draw_string(0, 0, &hardware.Name[0]);
 
     display::graphics.setForegroundColor(6);
     draw_string(17, 128, "DURATION: ");
+    
     display::graphics.setForegroundColor(9);
-
     if (! hardware.Duration) {
         draw_string(0, 0, "NONE");
     } else {
@@ -850,21 +822,15 @@ void BackIntel(char plr, char year)
     }
 
     display::graphics.setForegroundColor(1);
-    draw_string(33, 155, "THE ");
-
     if (plr == 0) {
-        draw_string(0, 0, "CIA ");
+        draw_string(33, 155, "THE CIA REPORTS THAT THE SOVIET UNION IS");
     } else {
-        draw_string(0, 0, "KGB ");
+        draw_string(33, 155, "THE KGB REPORTS THAT THE UNITED STATES IS");
     }
-
-    draw_string(0, 0, "REPORTS THAT THE ");
-    draw_string(0, 0, (plr==0)?"SOVIET UNION IS"
-                              :"UNITED STATES IS");
-
     draw_string(33, 169, "DEVELOPING THE ");
+    
     display::graphics.setForegroundColor(9);
-    draw_string(0, 0, &hardware.Name[0]);
+    draw_string(0, 0, hardware.Name);
     display::graphics.setForegroundColor(1);
     draw_string(0, 0, " AND RATES THE");
     draw_string(33, 183, "RELIABILITY AT ABOUT ");
@@ -894,126 +860,35 @@ void HarIntel(char plr, char acc)
     int j = 0;
     int save[28]{};
     if (acc == 0) {
-        static char F[10][11] = {
-            {7, 0, 7, 8, 11, 14, 15, 12, 12, 12},  //58
-            {4, 3, 5, 17, 12, 12, 12, 12, 12, 12},  //59
-            {3, 16, 24, 12, 12, 12, 12, 12, 12, 12},  //60
-            {9, 1, 4, 6, 8, 11, 14, 15, 17, 24},  //61
-            {10, 1, 2, 4, 6, 8, 11, 15, 16, 17, 18},  //62
-            {5, 19, 20, 9, 12, 12, 12, 12, 12, 12},  //63
-            {5, 9, 10, 18, 12, 12, 12, 12, 12, 12},  //64
-            {5, 9, 10, 18, 12, 12, 12, 12, 12, 12},  //65
-            {5, 9, 10, 18, 12, 12, 12, 12, 12, 12}  //66
+        static std::vector<int> F[10] = {
+            { 0,  7,  8, 11, 14, 15},  //58
+            { 3,  5, 17},  //59
+            {16, 24},  //60
+            { 1,  4,  6,  8, 11, 14, 15, 17},  //61
+            { 1,  2,  4,  6,  8, 11, 15, 16, 17},  //62
+            {19, 20,  9, 12},  //63
+            { 9, 10, 18, 12},  //64
+            { 9, 10, 18, 12},  //65
+            { 9, 10, 18, 12}  //66
         };
-        switch (Data->Year) {
-        case 58:
-            for (int i = 1; i < F[0][0]; i++) {
-                save[F[0][i]] = 1;
+        static std::vector<int> Categories[] = {
+            {0},    // 1958
+            {0,1},  //  '59
+            {0,1,2},//  '60
+            {2,3},  //  '61
+            {4},    //  '62
+            {4,5},  //  '63
+            {4,5,6},//  '64
+            {4,5,7},//  '65
+            {4,5,8} //  the rest
+        };
+        int idx = std::min(58 - Data->Year, 7);
+        for (int i : Categories[idx]) {
+            for (int j : F[i]) {
+                save[j] = 1;
             }
-
-            break;
-
-        case 59:
-            for (int i = 1; i < F[0][0]; i++) {
-                save[F[0][i]] = 1;
-            }
-
-            for (int i = 1; i < F[1][0]; i++) {
-                save[F[1][i]] = 1;
-            }
-
-            break;
-
-        case 60:
-            for (int i = 1; i < F[0][0]; i++) {
-                save[F[0][i]] = 1;
-            }
-
-            for (int i = 1; i < F[1][0]; i++) {
-                save[F[1][i]] = 1;
-            }
-
-            for (int i = 1; i < F[2][0]; i++) {
-                save[F[2][i]] = 1;
-            }
-
-            break;
-
-        case 61:
-            for (int i = 1; i < F[2][0]; i++) {
-                save[F[2][i]] = 1;
-            }
-
-            for (int i = 1; i < F[3][0]; i++) {
-                save[F[3][i]] = 1;
-            }
-
-            break;
-
-        case 62:
-            for (int i = 1; i < F[4][0]; i++) {
-                save[F[4][i]] = 1;
-            }
-
-            break;
-
-        case 63:
-            for (int i = 1; i < F[4][0]; i++) {
-                save[F[4][i]] = 1;
-            }
-
-            for (int i = 1; i < F[5][0]; i++) {
-                save[F[5][i]] = 1;
-            }
-
-            break;
-
-        case 64:
-            for (int i = 1; i < F[4][0]; i++) {
-                save[F[4][i]] = 1;
-            }
-
-            for (int i = 1; i < F[5][0]; i++) {
-                save[F[5][i]] = 1;
-            }
-
-            for (int i = 1; i < F[6][0]; i++) {
-                save[F[6][i]] = 1;
-            }
-
-            break;
-
-        case 65:
-            for (int i = 1; i < F[4][0]; i++) {
-                save[F[4][i]] = 1;
-            }
-
-            for (int i = 1; i < F[5][0]; i++) {
-                save[F[5][i]] = 1;
-            }
-
-            for (int i = 1; i < F[7][0]; i++) {
-                save[F[7][i]] = 1;
-            }
-
-            break;
-
-        default:
-            for (int i = 1; i < F[4][0]; i++) {
-                save[F[4][i]] = 1;
-            }
-
-            for (int i = 1; i < F[5][0]; i++) {
-                save[F[5][i]] = 1;
-            }
-
-            for (int i = 1; i < F[8][0]; i++) {
-                save[F[8][i]] = 1;
-            }
-
-            break;
         }
-
+        
         static char W[10][15] = {
             {9,  8, 3, 2, 1, 1, 3, 1},  // 58
             {7, 11, 3, 1, 1, 2, 1, 1, 3, 1, 1},  // 59
@@ -1051,40 +926,41 @@ void HarIntel(char plr, char acc)
             j = j - 1;    // adjust
         }
     } else {
+        auto& otherData = Data->P[other(plr)];
         // accurate programs pick one
         for (int i = 0; i < 7; i++) {
-            if (Data->P[other(plr)].Probe[i].Num >= 0) {
+            if (otherData.Probe[i].Num >= 0) {
                 save[i] = 1;
             }
 
-            if (Data->P[other(plr)].Rocket[i].Num >= 0) {
+            if (otherData.Rocket[i].Num >= 0) {
                 save[i + 7] = 1;
             }
 
-            if (Data->P[other(plr)].Manned[i].Num >= 0) {
+            if (otherData.Manned[i].Num >= 0) {
                 save[i + 14] = 1;
             }
 
-            if (Data->P[other(plr)].Misc[i].Num >= 0) {
+            if (otherData.Misc[i].Num >= 0) {
                 save[i + 21] = 1;
             }
         }
 
         save[3] = save[4] = save[5] = save[6] = save[12] = save[13] = save[26] = save[27] = 0;
 
-        if (Data->P[other(plr)].LaunchFacility[1] == LAUNCHPAD_OPERATIONAL) {
+        if (otherData.LaunchFacility[1] == LAUNCHPAD_OPERATIONAL) {
             save[3] = 1;
         }
 
-        if (Data->P[other(plr)].LaunchFacility[2] == LAUNCHPAD_OPERATIONAL) {
+        if (otherData.LaunchFacility[2] == LAUNCHPAD_OPERATIONAL) {
             save[4] = 1;
         }
 
-        if (Data->P[other(plr)].AstroLevel == 0) {
+        if (otherData.AstroLevel == 0) {
             save[5] = 1;
         }
 
-        if (Data->P[other(plr)].AstroLevel == 1) {
+        if (otherData.AstroLevel == 1) {
             save[6] = 1;
         }
 
@@ -1302,7 +1178,7 @@ void SaveIntel(char plr, char prg, char ind)
 
     int safetyFactor;
     if (prg == 5) {
-        char Op[61] = {
+        static char Op[61] = {
             0, 19, 20, 20, 21, 21, 21, 22, 28, 24, 25,
             23, 26, 27, 21, 21, 21, 21, 21, 21, 21,
             21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
@@ -1356,8 +1232,9 @@ void UpDateTable(char plr)
     // based on prestige
     char j;
     char p = other(plr);
+    auto& otherData = Data->P[other(plr)];
 
-    if (Data->P[p].LMpts > 0) {
+    if (otherData.LMpts > 0) {
         j = brandom(100);
 
         if (j < 60) {
@@ -1368,93 +1245,90 @@ void UpDateTable(char plr)
     }
 
     for (int i = 0; i < MAXIMUM_PRESTIGE_NUM; i++) {
-        if (Data->Prestige[i].Place == p || Data->Prestige[i].mPlace == p) {
-            switch (i) {
-            case Prestige_OrbitalSatellite:
-                ImpHard(plr, PROBE_HARDWARE, PROBE_HW_ORBITAL);
-                break;
+        if (Data->Prestige[i].Place != other(plr) && Data->Prestige[i].mPlace != other(plr)) continue;
+        {
+        switch (i) {
+        case Prestige_OrbitalSatellite:
+            ImpHard(plr, PROBE_HARDWARE, PROBE_HW_ORBITAL);
+            break;
 
-            case Prestige_LunarFlyby:
-            case Prestige_MercuryFlyby:
-            case Prestige_VenusFlyby:
-            case Prestige_MarsFlyby:
-            case Prestige_JupiterFlyby:
-            case Prestige_SaturnFlyby:
-                ImpHard(plr, PROBE_HARDWARE, PROBE_HW_INTERPLANETARY);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
-                break;
+        case Prestige_LunarFlyby:   case Prestige_MercuryFlyby:
+        case Prestige_VenusFlyby:   case Prestige_MarsFlyby:
+        case Prestige_JupiterFlyby: case Prestige_SaturnFlyby:
+            ImpHard(plr, PROBE_HARDWARE, PROBE_HW_INTERPLANETARY);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
+            break;
 
-            case Prestige_LunarProbeLanding:
-                ImpHard(plr, PROBE_HARDWARE, PROBE_HW_LUNAR);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
-                break;
+        case Prestige_LunarProbeLanding:
+            ImpHard(plr, PROBE_HARDWARE, PROBE_HW_LUNAR);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
+            break;
 
-            case Prestige_OnePerson:
-                ImpHard(plr, MANNED_HARDWARE, MANNED_HW_ONE_MAN_CAPSULE);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
-                break;
+        case Prestige_OnePerson:
+            ImpHard(plr, MANNED_HARDWARE, MANNED_HW_ONE_MAN_CAPSULE);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_TWO_STAGE);
+            break;
 
-            case Prestige_TwoPerson:
-                ImpHard(plr, MANNED_HARDWARE, MANNED_HW_TWO_MAN_CAPSULE);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
-                break;
+        case Prestige_TwoPerson:
+            ImpHard(plr, MANNED_HARDWARE, MANNED_HW_TWO_MAN_CAPSULE);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
+            break;
 
-            case Prestige_ThreePerson:
-                ImpHard(plr, MANNED_HARDWARE, MANNED_HW_THREE_MAN_CAPSULE);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
-                break;
+        case Prestige_ThreePerson:
+            ImpHard(plr, MANNED_HARDWARE, MANNED_HW_THREE_MAN_CAPSULE);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
+            break;
 
-            case Prestige_Minishuttle:
-                ImpHard(plr, MANNED_HARDWARE, MANNED_HW_MINISHUTTLE);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
-                break;
+        case Prestige_Minishuttle:
+            ImpHard(plr, MANNED_HARDWARE, MANNED_HW_MINISHUTTLE);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_THREE_STAGE);
+            break;
 
-            case Prestige_FourPerson:
-                ImpHard(plr, MANNED_HARDWARE, MANNED_HW_FOUR_MAN_CAPSULE);
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_MEGA_STAGE);
-                break;
+        case Prestige_FourPerson:
+            ImpHard(plr, MANNED_HARDWARE, MANNED_HW_FOUR_MAN_CAPSULE);
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_MEGA_STAGE);
+            break;
 
-            case Prestige_MannedOrbital:
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
-                break;
+        case Prestige_MannedOrbital:
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
+            break;
 
-            case Prestige_MannedLunarPass:
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
-                j = brandom(100);
+        case Prestige_MannedLunarPass:
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
+            j = brandom(100);
 
-                if (j < 70) {
-                    ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
-                } else {
-                    ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
-                }
+            if (j < 70) {
+                ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
+            } else {
+                ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
+            }
 
-                break;
+            break;
 
-            case Prestige_MannedLunarOrbit:
-                ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
-                j = brandom(100);
+        case Prestige_MannedLunarOrbit:
+            ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
+            j = brandom(100);
 
-                if (j < 70) {
-                    ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
-                } else {
-                    ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
-                }
+            if (j < 70) {
+                ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
+            } else {
+                ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
+            }
 
-                break;
+            break;
 
-            case Prestige_MannedDocking:
-                ImpHard(plr, MISC_HARDWARE, MISC_HW_DOCKING_MODULE);
-                break;
+        case Prestige_MannedDocking:
+            ImpHard(plr, MISC_HARDWARE, MISC_HW_DOCKING_MODULE);
+            break;
 
-            case Prestige_Spacewalk:
-            case Prestige_MannedSpaceMission:
-                ImpHard(plr, MISC_HARDWARE, MISC_HW_EVA_SUITS);
-                break;
+        case Prestige_Spacewalk:
+        case Prestige_MannedSpaceMission:
+            ImpHard(plr, MISC_HARDWARE, MISC_HW_EVA_SUITS);
+            break;
 
-            default:
-                break;
-            }  // switch
-        }  // if
+        default:
+            break;
+        }  // switch
     }  // for
 }
 
@@ -1498,34 +1372,15 @@ void IntelPhase(char plr, char pt)
         return;
     }
 
-    int splt = brandom(1000);
     int i = brandom(1000);
 
-    int Plr_Level;
-    if (plr == 0) {
-        Plr_Level = Data->Def.Lev1;
-    } else {
-        Plr_Level = Data->Def.Lev2;
-    }
+    int Plr_Level = (plr == 0)? Data->Def.Lev1
+                              : Data->Def.Lev2;
 
     // stagger accuracy for player levels
-    int Acc_Coef;
-    if (Plr_Level == 0) {
-        Acc_Coef = 600;
-    } else if (Plr_Level == 1) {
-        Acc_Coef = 500;
-    } else {
-        Acc_Coef = 400;
-    }
+    bool acc = (brandom(10) < (6 - Plr_Level));
 
-    int acc;
-    if (i < Acc_Coef) {
-        acc = 1;
-    } else {
-        acc = 0;    // 40% accurate
-    }
-
-    if (splt < 500) {
+    if (brandom(2)) {
         HarIntel(plr, acc);
     } else {
         MissionIntel(plr, acc);
@@ -1549,6 +1404,7 @@ void DrawBre(char plr)
 {
     FadeOut(2, 10, 0, 0);
     display::graphics.screen()->clear();
+    
     ShBox(0, 0, 319, 22);
     InBox(3, 3, 30, 19);
     IOBox(242, 3, 315, 19);
@@ -1631,53 +1487,53 @@ void Bre(char plr)
     while (1) {
         key = 0;
         GetMouse();
+        if (mousebuttons == 0 && key == 0) continue;
+        
+        /* Gameplay */
+        if ((x >= 135 && y > 32 && x <= 145 && y <= 77 && mousebuttons > 0) || key == UP_ARROW) {
+            InBox(135, 32, 145, 77);
+            WaitForMouseUp();
 
-        if (mousebuttons > 0 || key > 0) {  /* Gameplay */
-            if ((x >= 135 && y > 32 && x <= 145 && y <= 77 && mousebuttons > 0) || key == UP_ARROW) {
-                InBox(135, 32, 145, 77);
-                WaitForMouseUp();
-
-                if (year >= 0 && year + 1 <= Data->P[plr].PastIntel[0].cur - 1) {
-                    ClearIntelReportText();
-                    year++;
-                    BackIntel(plr, year);
-                }
-
-                OutBox(135, 32, 145, 77);
-
-            } else if (key == K_HOME) {
+            if (year >= 0 && year + 1 <= Data->P[plr].PastIntel[0].cur - 1) {
                 ClearIntelReportText();
-                year = Data->Year - 58;
+                year++;
                 BackIntel(plr, year);
-
-            } else if ((x >= 135 && y > 85 && x <= 145 && y <= 130 && mousebuttons > 0) || key == DN_ARROW) {
-                InBox(135, 85, 145, 130);
-                WaitForMouseUp();
-
-                if (year - 1 >= 0) {
-                    ClearIntelReportText();
-                    year--;
-                    BackIntel(plr, year);
-                }
-
-                OutBox(135, 85, 145, 130);
-
-            } else if (key == K_END) {
-                ClearIntelReportText();
-                year = 0;
-                BackIntel(plr, year);
-
-            } else if ((x >= 244 && y >= 5 && x <= 313 && y <= 17 && mousebuttons > 0) || key == K_ENTER || key == K_ESCAPE) {
-                InBox(244, 5, 313, 17);
-                WaitForMouseUp();
-
-                if (key > 0) {
-                    delay(150);
-                }
-
-                OutBox(244, 5, 313, 17);
-                break;  /* Done */
             }
+
+            OutBox(135, 32, 145, 77);
+
+        } else if (key == K_HOME) {
+            ClearIntelReportText();
+            year = Data->Year - 58;
+            BackIntel(plr, year);
+
+        } else if ((x >= 135 && y > 85 && x <= 145 && y <= 130 && mousebuttons > 0) || key == DN_ARROW) {
+            InBox(135, 85, 145, 130);
+            WaitForMouseUp();
+
+            if (year - 1 >= 0) {
+                ClearIntelReportText();
+                year--;
+                BackIntel(plr, year);
+            }
+
+            OutBox(135, 85, 145, 130);
+
+        } else if (key == K_END) {
+            ClearIntelReportText();
+            year = 0;
+            BackIntel(plr, year);
+
+        } else if ((x >= 244 && y >= 5 && x <= 313 && y <= 17 && mousebuttons > 0) || key == K_ENTER || key == K_ESCAPE) {
+            InBox(244, 5, 313, 17);
+            WaitForMouseUp();
+
+            if (key > 0) {
+                delay(150);
+            }
+
+            OutBox(244, 5, 313, 17);
+            break;  /* Done */
         }
     }
 }
@@ -1773,59 +1629,59 @@ void IStat(char plr)
     while (1) {
         key = 0;
         GetMouse();
+        if (mousebuttons == 0 && key == 0) continue;
+        
+        /* Gameplay */
+        if (((x >= 7 && y >= 164 && x <= 75 && y <= 195 && mousebuttons > 0) || key == 'U') && place != 0) {
+            InBox(7, 164, 75, 195);
+            WaitForMouseUp();
+            OutBox(7, 164, 75, 195);
+            place = 0;
+            hardware_buttons.drawButtons(place);
+            IInfo(plr, place, 0, dctx);
+            /* Unmanned */
+        }
 
-        if (mousebuttons > 0 || key > 0) {  /* Gameplay */
-            if (((x >= 7 && y >= 164 && x <= 75 && y <= 195 && mousebuttons > 0) || key == 'U') && place != 0) {
-                InBox(7, 164, 75, 195);
-                WaitForMouseUp();
-                OutBox(7, 164, 75, 195);
-                place = 0;
-                hardware_buttons.drawButtons(place);
-                IInfo(plr, place, 0, dctx);
-                /* Unmanned */
+        if (((x >= 83 && y >= 164 && x <= 156 && y <= 195 && mousebuttons > 0) || key == 'R') && place != 1) {
+            InBox(83, 164, 156, 195);
+            WaitForMouseUp();
+            OutBox(83, 164, 156, 195);
+            place = 1;
+            hardware_buttons.drawButtons(place);
+            IInfo(plr, place, 0, dctx);
+            /* Rocket */
+        }
+
+        if (((x >= 164 && y >= 164 && x <= 237 && y <= 195 && mousebuttons > 0) || key == 'C') && place != 2) {
+            InBox(164, 164, 237, 195);
+            WaitForMouseUp();
+            OutBox(164, 164, 237, 195);
+            /* Manned */
+            place = 2;
+            hardware_buttons.drawButtons(place);
+            IInfo(plr, place, 0, dctx);
+        }
+
+        if (((x >= 245 && y >= 164 && x <= 313 && y <= 195 && mousebuttons > 0) || key == 'M') && place != 3) {
+            InBox(245, 164, 313, 195);
+            WaitForMouseUp();
+            OutBox(245, 164, 313, 195);
+            place = 3;
+            hardware_buttons.drawButtons(place);
+            IInfo(plr, place, 0, dctx);
+            /* Misc */
+        }
+
+        if ((x >= 244 && y >= 5 && x <= 314 && y <= 17 && mousebuttons > 0) || key == K_ENTER || key == K_ESCAPE) {
+            InBox(244, 5, 314, 17);
+            WaitForMouseUp();
+
+            if (key > 0) {
+                delay(150);
             }
 
-            if (((x >= 83 && y >= 164 && x <= 156 && y <= 195 && mousebuttons > 0) || key == 'R') && place != 1) {
-                InBox(83, 164, 156, 195);
-                WaitForMouseUp();
-                OutBox(83, 164, 156, 195);
-                place = 1;
-                hardware_buttons.drawButtons(place);
-                IInfo(plr, place, 0, dctx);
-                /* Rocket */
-            }
-
-            if (((x >= 164 && y >= 164 && x <= 237 && y <= 195 && mousebuttons > 0) || key == 'C') && place != 2) {
-                InBox(164, 164, 237, 195);
-                WaitForMouseUp();
-                OutBox(164, 164, 237, 195);
-                /* Manned */
-                place = 2;
-                hardware_buttons.drawButtons(place);
-                IInfo(plr, place, 0, dctx);
-            }
-
-            if (((x >= 245 && y >= 164 && x <= 313 && y <= 195 && mousebuttons > 0) || key == 'M') && place != 3) {
-                InBox(245, 164, 313, 195);
-                WaitForMouseUp();
-                OutBox(245, 164, 313, 195);
-                place = 3;
-                hardware_buttons.drawButtons(place);
-                IInfo(plr, place, 0, dctx);
-                /* Misc */
-            }
-
-            if ((x >= 244 && y >= 5 && x <= 314 && y <= 17 && mousebuttons > 0) || key == K_ENTER || key == K_ESCAPE) {
-                InBox(244, 5, 314, 17);
-                WaitForMouseUp();
-
-                if (key > 0) {
-                    delay(150);
-                }
-
-                OutBox(244, 5, 314, 17);
-                break;  /* Done */
-            }
+            OutBox(244, 5, 314, 17);
+            break;  /* Done */
         }
     }
 }
