@@ -1303,7 +1303,7 @@ void UpDateTable(char plr)
         case Prestige_MannedLunarOrbit:
             ImpHard(plr, ROCKET_HARDWARE, ROCKET_HW_BOOSTERS);
 
-            if (brndom(10) < 7) {
+            if (brandom(10) < 7) {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_B);
             } else {
                 ImpHard(plr, MISC_HARDWARE, MISC_HW_KICKER_A);
