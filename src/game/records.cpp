@@ -1432,7 +1432,7 @@ void UpdateRecords(char Ty)
                     if (Ty != 1) break;
                     
                     temp = std::count_if(pData.History, pData.History + pData.PastMissionCount,
-                                         [](MissionType& mission){return mission.Duration > 0;});
+                                         [](PastInfo& mission){return mission.Duration > 0;});
 
                     if (rec[k][0].place == 0) {
                         Rec_Change = 0;
@@ -1936,20 +1936,21 @@ void RecChange(int i, int j, int k, int temp, int max, char Rec_Change)
         break;
 
     case 1: case 2:
+        {
         if (Rec_Change == 2) {
             temp = mission.Man[PAD_A][max];
         } else {
             temp = mission.Man[PAD_A][0];
         }
-        auto is_worse = [](Record_Entry& old_record, MissionType& mission){
-            if (rec[k][0].yr < mission.MissionYear) return true;
-            if (rec[k][0].yr > mission.MissionYear) return false;
+        auto is_worse = [](Record_Entry& old_record, PastInfo& mission){
+            if (old_record.yr < mission.MissionYear) return true;
+            if (old_record.yr > mission.MissionYear) return false;
             
-            if (rec[k][0].month < mission.Month) return true;
-            if (rec[k][0].month > mission.Month) return false;
+            if (old_record.month < mission.Month) return true;
+            if (old_record.month > mission.Month) return false;
 
             return false;
-        }
+        };
 
         switch (rec[k][0].place) {
         case 1:
@@ -1995,6 +1996,7 @@ void RecChange(int i, int j, int k, int temp, int max, char Rec_Change)
         }
 
         break;
+        }
 
     case 3:
         if (k >= 35 && k <= 41) {
@@ -2093,7 +2095,7 @@ void RecChange(int i, int j, int k, int temp, int max, char Rec_Change)
 
     case 5:
         {
-        auto is_worse = [](Record_Entry& old_record, int temp, MissionType& mission){
+        auto is_worse = [](Record_Entry& old_record, int temp, PastInfo& mission){
             if (old_record.tag > temp) return true;
             if (old_record.tag < temp) return false;
 
@@ -2105,7 +2107,6 @@ void RecChange(int i, int j, int k, int temp, int max, char Rec_Change)
 
             return false;
         }
-        bool hold = false;
 
         switch (rec[k][0].place) {
         case 1:
