@@ -137,38 +137,37 @@ void PlaySequence(char plr, int step, const char* InSeq, char mode)
     }
 
     // since Seq apparently needs to be mutable, copy the input parameter
-    char Seq[128];
-    strncpy(Seq, InSeq, sizeof(Seq));
+    std::string Seq = InSeq;
 
     //Specs: female 'naut kludge
-    bool fem;
-    if (mode == 2) {
-        fem = true;  //Spec: additional search param.
-        mode = 0;
-    } else {
-        fem = false;
-    }
+    bool fem = (mode == 2); //Spec: additional search param.
+    bool isfail = (mode == 1);
+    auto& asset_container = (isfail)? Assets->fseq
+                                    : Assets->sseq;
 
     //Specs: LEM Activities Kludge
-    if (Seq[0] == 'h') {
+    // TODO: more investigation is needed about possible values in general
+    if (Seq[0] == 'h' && Mev[step - 1].Name[0] == 'S') {
         assert(step > 0);
+        Seq[0] = 'Q';
 
-        if (Mev[step - 1].Name[0] == 'S') {
-            Seq[0] = 'Q';
-        } else {
-            Seq[0] = 'i';
-            strncpy(Mev[step].FName, "F034", 4);
+        if ((Seq[1] == 'U' || Seq[1] == 'S') && Seq[2] == 'C') {
+            if (Seq[3] == '5') {
+                Seq[3] = '6';
+            } else if (Seq[3] == '6') {
+                Seq[3] = '5';
+            }
         }
-    }
-
-    if (Seq[0] == 'Q') {
+    } else if (Seq[0] == 'h') {
+        assert(step > 0);
+        Seq[0] = 'i';
+        strncpy(Mev[step].FName, "F034", 4);
+    } else if (Seq[0] == 'Q') {
         assert(step > 0);
 
         if (Mev[step - 1].Name[0] != 'S') {
-            if (mode == 0) {
-                Seq[0] = 'i';
-            } else if (mode == 1) {
-                Seq[0] = 'i';
+            Seq[0] = 'i';
+            if (isfail) {
                 strncpy(Mev[step].FName, "F034", 4);
             }
         }
@@ -183,122 +182,72 @@ void PlaySequence(char plr, int step, const char* InSeq, char mode)
     }
 
     //Specs: LM act lunar liftoff failure kludge and failed landing LPL
-    if (mode == 1) {
-        if (Seq[0] == 'T') {
-            if (Seq[3] == '6' || Seq[3] == '5') {
-                strncpy(Mev[step].FName, "F019", 4);
-            }
-        }
-
-        if (Seq[0] == 'Q') {
-            if (Seq[3] == '6' || Seq[3] == '5') {
-                strncpy(Mev[step].FName, "F216", 4);
-            }
-        }
-
-        if (Seq[0] == 'S') {
-            if (Seq[2] == 'P') {
-                strncpy(Mev[step].FName, "F118", 4);
-            }
-        }
-
-        if (Seq[0] == 'P') {
+    if (isfail) {
+        if (Seq[0] == 'T' && (Seq[3] == '5' || Seq[3] == '6')) {
+            strncpy(Mev[step].FName, "F019", 4);
+        } else if (Seq[0] == 'Q' && (Seq[3] == '5' || Seq[3] == '6')) {
+            strncpy(Mev[step].FName, "F216", 4);
+        } else if (Seq[0] == 'S' && Seq[2] == 'P') {
+            strncpy(Mev[step].FName, "F118", 4);
+        } else if (Seq[0] == 'P' && Seq[5] == '6') {
             //TC changero kludge
-            if (Seq[5] == '6') {
-                std::swap(Seq[4], Seq[2]);
-                std::swap(Seq[5], Seq[3]);
-                strncpy(Mev[step].FName, "F115", 4);
-            }
+            std::swap(Seq[4], Seq[2]);
+            std::swap(Seq[5], Seq[3]);
+            strncpy(Mev[step].FName, "F115", 4);
         }
     }
 
-    //Specs: launch sync
-    bool lnch = (Seq[0] == '#');
+    auto fail_foo = [&](){
+        auto& asset_container = Assets->fseq;
+        
+        // first find the correct step
+        auto iter = std::find_if(asset_container.begin(), asset_container.end(),
+                                 [](auto& asset){ // first 4 characters should coincide (no idea why 4)
+                                     return std::string_view(Mev[step].FName, 4) == std::string_view(asset, 4);
+                                 });
+        if (iter == asset_container.end()) return {};
 
-    bool err = false;
-    int i=0;
-    if (mode == 1) {
-        /* i: the first element in fSeq belonging to the right step */
-        for (i = 0; i < Assets->fSeq.size(); i++) {
-            if (strncmp(Assets->fSeq.at(i).MissionStep.c_str(), Mev[step].FName, 4) == 0) {
-                break;
+        // then find required sequence
+        for(; iter != asset_container.end(); ++iter) {
+            std::string ID = iter->MissionIdSequence;
+            auto ID_view = std::string_view{ID}.substr(3);
+            if (strncmp(&ID[3], Seq, strlen(&ID[3])) == 0) return std::optional{std::pair{iter, ID}};
+            if (strncmp(iter->MissionStep.c_str(), Mev[step].FName, 4) != 0) return {};
+        }
+        return std::nullopt;
+    };
+    auto success_foo = [&](){
+        auto& asset_container = Assets->sseq;
+        for (auto iter = asset_container.begin(); iter != asset_container.end() ; ++iter) {
+            std::string ID = iter->MissionIdSequence;
+            std::string_view view = std::string_view{ID}.substr(3);
+            if (strncmp(&ID[3], Seq, strlen(&ID[3])) != 0) continue;
+
+            if (ID[2] == '1' && !fem) {
+                iter += 1;
+                return std::optional{iter, iter->MissionIdSequence};
             }
+            return std::optional{iter, ID};
         }
+    };
 
-        if (i == Assets->fSeq.size()) {
-            err = true;
-        }
+    auto opt = (isfail)? fail_foo()
+                       : success_foo();
+    if (opt == std::nullopt) { // TODO replace with .value_or when we switch to ++20
+        opt = std::optional{std::pair{asset_container.begin(), "110DEFAULT"}};
     }
-
-    int j=0;
-    std::string ID;
-    if (mode == 0) {
-        j = 0;
-        ID = Assets->sSeq.at(j).MissionIdSequence;
-
-        while (strncmp(&ID[3], Seq, strlen(&ID[3])) != 0) {
-            j++;
-
-            if (j == Assets->sSeq.size()) {
-                err = true;
-                break;
-            } else {
-                ID = Assets->sSeq.at(j).MissionIdSequence;
-            }
-        }
-
-        if (ID[2] - 0x30 == 1) {
-            if (!fem) {
-                j++;
-                ID = Assets->sSeq.at(j).MissionIdSequence;
-            }
-        }
-    } else if (!err) {
-        j = i;
-        ID = Assets->fSeq.at(j).MissionIdSequence;
-
-        while (strncmp(&ID[3], Seq, strlen(&ID[3])) != 0) {
-            j++;
-
-            if (j == Assets->fSeq.size()) {
-                err = true;
-                break;
-            } else {
-                if (strncmp(Assets->fSeq.at(j).MissionStep.c_str(), Mev[step].FName, 4) != 0) {
-                    // j is already entering the next MissionStep
-                    err = true;
-                    break;
-                } else {
-                    ID = Assets->fSeq.at(j).MissionIdSequence;
-                }
-            }
-        }
-    }
-
-    if (err) {
-        j = 0;
-        ID = "110DEFAULT";
-    }
+    auto [iter, ID] = opt;
 
     //::::::::::::::::::::::::::::
     // Specs: Sequence Variation :
     //::::::::::::::::::::::::::::
-    if (ID[0] - 0x30 != 1) {
-        unsigned int max = (unsigned)(ID[0] - 0x30);
-        j += Mev[step].rnum % max;
-
-        if (mode == 0) {
-            ID = Assets->sSeq.at(j).MissionIdSequence;
-        } else {
-            ID = Assets->fSeq.at(j).MissionIdSequence;
-        }
+    if (ID[0] != '1') {
+        unsigned int max = (unsigned)(ID[0] - '0');
+        iter += Mev[step].rnum % max;
+        ID = iter->MissionIdSequence;
     }
 
-    if (mode == 0) {
-        interimData.tempReplay.at((plr * 100) + Data->P[plr].PastMissionCount).push_back({false, ID});
-    } else {
-        interimData.tempReplay.at((plr * 100) + Data->P[plr].PastMissionCount).push_back({true, ID});
-    }
+    interimData.tempReplay.at((plr * 100) + Data->P[plr].PastMissionCount).push_back({isfail, ID});
 
     if (AI[plr] == 1) {
         return;
@@ -306,7 +255,7 @@ void PlaySequence(char plr, int step, const char* InSeq, char mode)
 
     FILE* ffin = open_gamedat("BABYPICX.CDR");
 
-    bool AEPT = (Seq[0] == 'A' || Seq[0] == 'E' || Seq[0] == 'P' || Seq[0] == 'T' || Seq[0] == '#') && (mode == 0);
+    bool AEPT = (Seq[0] == 'A' || Seq[0] == 'E' || Seq[0] == 'P' || Seq[0] == 'T' || Seq[0] == '#') && (! isfail);
     std::vector<Infin> Mob;
     std::vector<OF> Mob2;
     if (AEPT) {
@@ -358,16 +307,14 @@ void PlaySequence(char plr, int step, const char* InSeq, char mode)
 
     unsigned char sts = 0;
     int max = ID[1] - '0';
-    bool BABY = (mode == 0) && (j >= 1 && j <= 22);
+    bool BABY = (! isfail) && (j >= 1 && j <= 22);
     std::array<int,4> SHTS {brandom(10), brandom(10), brandom(10), brandom(10)};
 
     bool keep_going = true;
     for(int i=0; keep_going && i < max; ++i) {
-        auto& asset_container = (mode == 0)? Assets->sSeq
-                                           : Assets->fSeq;
-        play_audio(asset_container.at(j).audio.at(i), mode);
+        play_audio(iter->audio.at(i), isfail);
         
-        std::string vid_filename = asset_container.at(j).video.at(i) + ".ogg";
+        std::string vid_filename = iter->video.at(i) + ".ogg";
         
         LOG_INFO("opening video file `%s'", vid_filename.c_str());
         
@@ -461,7 +408,7 @@ void PlaySequence(char plr, int step, const char* InSeq, char mode)
     }
 
     if (!IsChannelMute(AV_SOUND_CHANNEL)) {
-        if (!lnch) {
+        if (Seq[0] != '#') {
             play_audio("wh", 0);
         }
 
